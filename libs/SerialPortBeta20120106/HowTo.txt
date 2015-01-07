@@ -1,0 +1,65 @@
+This was posted in the Adduino forum by user sixeyes.
+It is a nice introduction to to the SerialPort library.
+
+The core Arduino based serial code looks like this:
+
+Code:
+
+void setup()
+{
+    Serial.begin(9600);
+    Serial.println("Using Arduino supplied HardwareSerial");
+}
+
+void loop()
+{
+}
+
+
+So if you've copied the SerialPort folder from the zip file into your
+libraries folder (So you have Arduino-1.0\libraries\SerialPort\SerialPort.h
+and Arduino-1.0\libraries\SerialPort\SerialPort.cpp)
+you can write the following code instead
+
+
+Code:
+
+#include <SerialPort.h>
+
+SerialPort<0, 32, 256> port;
+
+void setup()
+{
+    port.begin(9600);
+    port.println("Using SerialPort class");
+}
+
+void loop()
+{
+}
+
+
+Just remember to do the following and you should be alright:
+
+•Include <SerialPort.h>
+•Declare new Serial port including its parameters
+•Initialise (call begin()) and use the new serial port (NOT Serial)
+
+The configuration of the serial port looks odd to anyone not familiar with
+C++ templates, but it's easy to explain. The first parameter inside the
+angle brackets is the serial port number. Unless you've got a board with
+more than one serial port (e.g. Arduino Mega) this will always be 0. The
+second parameter is the size of the receive buffer in bytes and the third
+is the size of the transmit buffer in bytes.
+
+You can ignore the stuff about editing SerialPort.h. You'll only need this
+if you're short of flash memory at which point you can come back and ask
+more questions.
+
+If you do by chance refer to both the new SerialPort and HardwareSerial in
+the same sketch you'll get some error messages about duplicate interrupt
+vectors.
+
+Hope that helps.
+
+Iain

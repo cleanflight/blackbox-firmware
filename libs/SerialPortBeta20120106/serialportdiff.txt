@@ -1,0 +1,404 @@
+diff -rb ArduinoOldVer/SerialPort/SerialPort.cpp Arduino/libraries/SerialPort/SerialPort.cpp
+44c44
+<   size_t t = tail_;
+---
+>   buf_size_t t = tail_;
+60,61c60,61
+< uint16_t SerialRingBuffer::get(uint8_t* b, size_t n) {
+<   size_t nr;
+---
+> SerialRingBuffer::buf_size_t SerialRingBuffer::get(uint8_t* b, buf_size_t n) {
+>   buf_size_t nr;
+63c63
+<   size_t h = head_;
+---
+>   buf_size_t h = head_;
+65c65
+<   size_t t = tail_;
+---
+>   buf_size_t t = tail_;
+84c84
+< void SerialRingBuffer::init(uint8_t* b, size_t s) {
+---
+> void SerialRingBuffer::init(uint8_t* b, buf_size_t s) {
+102c102
+<   size_t h = head_;
+---
+>   buf_size_t h = head_;
+119c119,120
+< uint16_t SerialRingBuffer::put(uint8_t* b, size_t n) {
+---
+> SerialRingBuffer::buf_size_t
+>   SerialRingBuffer::put(const uint8_t* b, buf_size_t n) {
+121c122
+<   size_t t = tail_;
+---
+>   buf_size_t t = tail_;
+123,124c124,125
+<   size_t w;
+<   size_t h = head_;
+---
+>   buf_size_t space;  // space in ring buffer
+>   buf_size_t h = head_;
+126c127
+<     w = t - h - 1;
+---
+>     space = t - h - 1;
+128,129c129,130
+<     w = size_ - h;
+<     if (t == 0) w -= 1;
+---
+>     space = size_ - h;
+>     if (t == 0) space -= 1;
+131c132
+<   if (n > w) n = w;
+---
+>   if (n > space) n = space;
+146c147
+< uint16_t SerialRingBuffer::put_P(PGM_P b, size_t n) {
+---
+> SerialRingBuffer::buf_size_t SerialRingBuffer::put_P(PGM_P b, buf_size_t n) {
+148c149
+<   size_t t = tail_;
+---
+>   buf_size_t t = tail_;
+150,151c151,152
+<   size_t w;
+<   size_t h = head_;
+---
+>   buf_size_t space;  // space in ring buffer
+>   buf_size_t h = head_;
+153c154
+<     w = t - h - 1;
+---
+>     space = t - h - 1;
+155,156c156,157
+<     w = size_ - h;
+<     if (t == 0) w -= 1;
+---
+>     space = size_ - h;
+>     if (t == 0) space -= 1;
+158c159
+<   if (n > w) n = w;
+---
+>   if (n > space) n = space;
+189c190
+< //SerialRingBuffer rxbuf0;
+---
+> // SerialRingBuffer rxbuf0;
+diff -rb ArduinoOldVer/SerialPort/SerialPort.h Arduino/libraries/SerialPort/SerialPort.h
+26,34d25
+< #include <avr/io.h>
+< #include <avr/pgmspace.h>
+< #if ARDUINO < 100
+< #include <WProgram.h>
+< class __FlashStringHelper;
+< #define F(string_literal) (reinterpret_cast<__FlashStringHelper *>(PSTR(string_literal)))
+< #else
+< #include <Arduino.h>
+< #endif
+37c28,35
+< #define SERIAL_PORT_VERSION 20120104
+---
+> #define SERIAL_PORT_VERSION 20120106
+> //------------------------------------------------------------------------------
+> /**
+>  * Set ALLOW_LARGE_BUFFERS to zero to limit buffer sizes to 254 bytes.
+>  * ALLOW_LARGE_BUFFERS controls whether uint16_t or uint8_t will be
+>  * used for buffer indices.
+>  */
+> #define ALLOW_LARGE_BUFFERS 1
+40,42c38,40
+<  * Set to zero to use the Arduino Print version of write(const char*)
+<  * and write(const uint8_t*, size_t).  This will save some flash
+<  * but is much slower.
+---
+>  * Set USE_WRITE_OVERRIDES to zero to use the Arduino Print version
+>  * of write(const char*) and write(const uint8_t*, size_t).  This will
+>  * save some flash but is much slower.
+44a43
+> //------------------------------------------------------------------------------
+46,47c45,47
+<  * Set zero to save flash and RAM if no RX buffering is used.  RxBufSize
+<  * must be zero in all SerialPort constructors if BUFFERED_RX is zero.
+---
+>  * Set BUFFERED_RX zero to save flash and RAM if no RX buffering is used.
+>  * RxBufSize must be zero in all SerialPort constructors if
+>  * BUFFERED_RX is zero.
+49a50
+> //------------------------------------------------------------------------------
+51,52c52,54
+<  * Set zero to save flash and RAM if no TX buffering is used.  TxBufSize
+<  * must be zero in all SerialPort constructors if BUFFERED_TX is zero.
+---
+>  * Set BUFFERED_TX zero to save flash and RAM if no TX buffering is used.
+>  * TxBufSize must be zero in all SerialPort constructors if
+>  * BUFFERED_TX is zero.
+54a57
+> //------------------------------------------------------------------------------
+56c59
+<  * Set nonzero to enable RX error checking
+---
+>  * Set ENABLE_RX_ERROR_CHECKING zero to disable RX error checking.
+59a63,83
+> // Define symbols to allocate 64 byte ring buffers with capacity for 63 bytes.
+> /** Define NewSerial with buffering like Arduino 1.0. */
+> #define USE_NEW_SERIAL SerialPort<0, 63, 63> NewSerial
+> /** Define NewSerial1 with buffering like Arduino 1.0. */
+> #define USE_NEW_SERIAL1 SerialPort<1, 63, 63> NewSerial1
+> /** Define NewSerial2 with buffering like Arduino 1.0. */
+> #define USE_NEW_SERIAL2 SerialPort<2, 63, 63> NewSerial2
+> /** Define NewSerial3 with buffering like Arduino 1.0. */
+> #define USE_NEW_SERIAL3 SerialPort<3, 63, 63> NewSerial3
+> //------------------------------------------------------------------------------
+> #include <avr/io.h>
+> #include <avr/pgmspace.h>
+> #if ARDUINO < 100
+> #include <WProgram.h>
+> class __FlashStringHelper;
+> #define F(string_literal)\
+>         (reinterpret_cast<__FlashStringHelper *>(PSTR(string_literal)))
+> #else  // ARDUINO < 100
+> #include <Arduino.h>
+> #endif  // ARDUINO < 100
+> //------------------------------------------------------------------------------
+93c117
+< #elif defined(UCSRA)
+---
+> #elif defined(UCSRA)  // UCSR0A
+202a227,232
+>   /** Define type for buffer indices */
+> #if ALLOW_LARGE_BUFFERS
+>   typedef uint16_t buf_size_t;
+> #else  // ALLOW_LARGE_BUFFERS
+>   typedef uint8_t buf_size_t;
+> #endif  // ALLOW_LARGE_BUFFERS
+208,209c238,239
+<   size_t get(uint8_t* b, size_t n);
+<   void init(uint8_t* b, size_t s);
+---
+>   buf_size_t get(uint8_t* b, buf_size_t n);
+>   void init(uint8_t* b, buf_size_t s);
+212,213c242,243
+<   size_t put(uint8_t* b, size_t n);
+<   size_t put_P(PGM_P b, size_t n);
+---
+>   buf_size_t put(const uint8_t* b, buf_size_t n);
+>   buf_size_t put_P(PGM_P b, buf_size_t n);
+216,218c246,248
+<   volatile size_t head_;  /**< Index to next empty location. */
+<   volatile size_t tail_;  /**< Index to last entry if head_ != tail_. */
+<   size_t size_;           /**< Size of the buffer. Capacity is size -1. */
+---
+>   volatile buf_size_t head_;  /**< Index to next empty location. */
+>   volatile buf_size_t tail_;  /**< Index to last entry if head_ != tail_. */
+>   buf_size_t size_;           /**< Size of the buffer. Capacity is size -1. */
+232a263,272
+> /** Cause error message for bad port number
+>  * \return Never returns since it is never called
+>  */
+> uint8_t badRxBufSize(void)
+>   __attribute__((error("RX buffer size too large")));
+> /** Cause error message for bad port number
+>  * \return Never returns since it is never called
+>  */
+> uint8_t badTxBufSize(void)
+>   __attribute__((error("TX buffer size too large")));
+243,244c283,286
+<     if (PortNumber >= SERIAL_PORT_COUNT) {
+<       badPortNumber();
+---
+>     if (PortNumber >= SERIAL_PORT_COUNT) badPortNumber();
+>     if (sizeof(SerialRingBuffer::buf_size_t) == 1) {
+>       if (RxBufSize >254) badRxBufSize();
+>       if (TxBufSize >254) badTxBufSize();
+291c333
+<   void begin(long baud, uint8_t options = SP_8_BIT_CHAR) {
+---
+>   void begin(uint32_t baud, uint8_t options = SP_8_BIT_CHAR) {
+293d334
+<     bool use_u2x = true;
+295,298c336,338
+<     //  disable USART interrupts
+<     cli();
+<     *usart[PortNumber].ucsrb &= ~(M_RXCIE | M_UDRIE);
+<     sei();
+---
+>     // disable USART interrupts.  Set UCSRB to reset values.
+>     *usart[PortNumber].ucsrb = 0;
+> 
+300,301c340
+<     *usart[PortNumber].ucsrc &= ~SP_OPT_MASK;
+<     *usart[PortNumber].ucsrc |= options & SP_OPT_MASK;
+---
+>     *usart[PortNumber].ucsrc = options & SP_OPT_MASK;
+303c342
+<   #if F_CPU == 16000000UL
+---
+>     if (F_CPU == 16000000UL && baud == 57600) {
+307,315d345
+<     if (baud == 57600) {
+<       use_u2x = false;
+<     }
+<   #endif
+<   
+<     if (use_u2x) {
+<       *usart[PortNumber].ucsra = M_U2X;
+<       baud_setting = (F_CPU / 4 / baud - 1) / 2;
+<     } else {
+317a348,350
+>     } else {
+>       *usart[PortNumber].ucsra = M_U2X;
+>       baud_setting = (F_CPU / 4 / baud - 1) / 2;
+328c361
+<     *usart[PortNumber].ucsrb |= bits;
+---
+>     *usart[PortNumber].ucsrb = bits;
+407c440
+<     }else {
+---
+>     } else {
+427c460,462
+<         p += rxRingBuf[PortNumber].get(p, limit - p);
+---
+>         size_t nr = limit - p;
+>         if (sizeof(SerialRingBuffer::buf_size_t) == 1 && nr > 255) nr = 255;
+>         p += rxRingBuf[PortNumber].get(p, nr);
+519c554,556
+<         int m = txRingBuf[PortNumber].put_P(b, w);
+---
+>         size_t nw = w;
+>         if (sizeof(SerialRingBuffer::buf_size_t) == 1 && nw > 255) nw = 255;
+>         size_t m = txRingBuf[PortNumber].put_P(b, nw);
+580c617
+<   void write(uint8_t* b, size_t n) {
+---
+>   void write(const uint8_t* b, size_t n) {
+582c619
+<   size_t write(uint8_t* b, size_t n) {
+---
+>   size_t write(const uint8_t* b, size_t n) {
+589c626,628
+<         int m = txRingBuf[PortNumber].put(b, w);
+---
+>         size_t nw = w;
+>         if (sizeof(SerialRingBuffer::buf_size_t) == 1 && nw > 255) nw = 255;
+>         size_t m = txRingBuf[PortNumber].put(b, nw);
+611c650
+<    write((uint8_t*)s, n);
+---
+>     write(reinterpret_cast<const uint8_t*>(s), n);
+616c655
+<    return write((uint8_t*)s, n);
+---
+>     return write(reinterpret_cast<const uint8_t*>(s), n);
+diff -rb ArduinoOldVer/SerialPort/examples/ArduinoTest/ArduinoTest.pde Arduino/libraries/SerialPort/examples/ArduinoTest/ArduinoTest.pde
+3a4,9
+>   uint32_t t = micros();
+>   Serial.write("This string is used to measure the time to buffer data.\r\n");
+>   t = micros() - t;
+>   Serial.write("Time: ");
+>   Serial.print(t);
+>   Serial.write(" us\r\n");
+6c12
+<   Serial.write("enter a string\r\n");
+---
+>   Serial.write("\r\nenter a string\r\n");
+13c19
+<   Serial.write("\r\n\r\n");
+---
+>   Serial.write("\r\n");
+diff -rb ArduinoOldVer/SerialPort/examples/BufferedSize/BufferedSize.pde Arduino/libraries/SerialPort/examples/BufferedSize/BufferedSize.pde
+11,13d10
+< // use macro to substitute for Serial
+< #define Serial NewSerial
+< 
+15,16c12,13
+<   Serial.begin(9600);
+<   Serial.println(FreeRam());
+---
+>   NewSerial.begin(9600);
+>   NewSerial.println(FreeRam());
+diff -rb ArduinoOldVer/SerialPort/examples/BufferedTest/BufferedTest.pde Arduino/libraries/SerialPort/examples/BufferedTest/BufferedTest.pde
+6,8d5
+< // use macro to substitute for Serial
+< #define Serial NewSerial
+< 
+10c7,13
+<   Serial.begin(9600);
+---
+>   NewSerial.begin(9600);
+>   uint32_t t = micros();
+>   NewSerial.write("This string is used to measure the time to buffer data.\r\n");
+>   t = micros() - t;
+>   NewSerial.write("Time: ");
+>   NewSerial.print(t);
+>   NewSerial.write(" us\r\n");
+13,14c16,17
+<   Serial.write("enter a string\r\n");
+<   while (!Serial.available()) {}
+---
+>   NewSerial.write("\r\nenter a string\r\n");
+>   while (!NewSerial.available()) {}
+16c19
+<     Serial.write(Serial.read());
+---
+>     NewSerial.write(NewSerial.read());
+18,20c21,23
+<     while (!Serial.available() && (millis() - m) < 3) {}
+<   } while(Serial.available());
+<   Serial.write("\r\n\r\n");
+---
+>     while (!NewSerial.available() && (millis() - m) < 3) {}
+>   } while(NewSerial.available());
+>   NewSerial.write("\r\n");
+Only in Arduino/libraries/SerialPort/examples: HelloWorld
+diff -rb ArduinoOldVer/SerialPort/examples/MegaTest/MegaTest.pde Arduino/libraries/SerialPort/examples/MegaTest/MegaTest.pde
+25c25
+<   }while (in->available());
+---
+>   } while (in->available());
+diff -rb ArduinoOldVer/SerialPort/examples/UnbufferedSize/UnbufferedSize.pde Arduino/libraries/SerialPort/examples/UnbufferedSize/UnbufferedSize.pde
+11,13d10
+< // use macro to substitute for Serial
+< #define Serial NewSerial
+< 
+15,16c12,13
+<   Serial.begin(9600);
+<   Serial.println(FreeRam());
+---
+>   NewSerial.begin(9600);
+>   NewSerial.println(FreeRam());
+diff -rb ArduinoOldVer/SerialPort/examples/UnbufferedTest/UnbufferedTest.pde Arduino/libraries/SerialPort/examples/UnbufferedTest/UnbufferedTest.pde
+6,8d5
+< // use macro to substitute for Serial
+< #define Serial NewSerial
+< 
+10c7,13
+<   Serial.begin(9600);
+---
+>   NewSerial.begin(9600);
+>   uint32_t t = micros();
+>   NewSerial.write("This string is used to measure the time to buffer data.\r\n");
+>   t = micros() - t;
+>   NewSerial.write("Time: ");
+>   NewSerial.print(t);
+>   NewSerial.write(" us\r\n");
+13,14c16,17
+<   Serial.write("enter a string\r\n");
+<   while (!Serial.available()) {}
+---
+>   NewSerial.write("\r\nenter a string\r\n");
+>   while (!NewSerial.available()) {}
+16c19
+<     Serial.write(Serial.read());
+---
+>     NewSerial.write(NewSerial.read());
+18,20c21,23
+<     while (!Serial.available() && (millis() - m) < 3) {}
+<   } while(Serial.available());
+<   Serial.write("\r\n\r\n");
+---
+>     while (!NewSerial.available() && (millis() - m) < 3) {}
+>   } while(NewSerial.available());
+>   NewSerial.write("\r\n");
