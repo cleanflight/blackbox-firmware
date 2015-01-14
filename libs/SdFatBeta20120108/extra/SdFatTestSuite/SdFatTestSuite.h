@@ -19,8 +19,8 @@
  */
 #ifndef SdFatTestSuite_h
 #define SdFatTestSuite_h
-#include "../../../libs/SdFatBeta20120108/SdFat/SdFat.h"
-#include "../../../libs/SdFatBeta20120108/SdFat/SdFatUtil.h"
+#include <SdFat.h>
+#include <SdFatUtil.h>
 #define testVerifyBool(result) testVerify_P(result, PSTR(#result))
 #define testVerifyMsg(result, msg) testVerify_P(result, PSTR(msg))
 #define testVerifyStr(result, expect) testVerify_P(result, PSTR(expect))

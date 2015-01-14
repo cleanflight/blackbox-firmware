@@ -17,9 +17,8 @@
  * along with the Arduino SdFat Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../../libs/SdFatBeta20120108/SdFat/SdFatUtil.h"
-
-#include "../../libs/SdFatBeta20120108/SdFat/SdFat.h"
+#include <SdFat.h>
+#include <SdFatUtil.h>
 //------------------------------------------------------------------------------
 /** Amount of free RAM
  * \return The number of free bytes.

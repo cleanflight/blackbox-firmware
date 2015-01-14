@@ -23,7 +23,7 @@
  * \file
  * \brief ArduinoInStream and ArduinoOutStream classes
  */
-#include "../../libs/SdFatBeta20120108/SdFat/bufstream.h"
+#include <bufstream.h>
 //==============================================================================
 /**
  * \class ArduinoInStream

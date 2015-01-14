@@ -23,8 +23,8 @@
  * \file
  * \brief \ref fstream, \ref ifstream, and \ref ofstream classes
  */
-#include "../../libs/SdFatBeta20120108/SdFat/iostream.h"
-#include "../../libs/SdFatBeta20120108/SdFat/SdBaseFile.h"
+#include <SdBaseFile.h>
+#include <iostream.h>
 //==============================================================================
 /**
  * \class SdStreamBase

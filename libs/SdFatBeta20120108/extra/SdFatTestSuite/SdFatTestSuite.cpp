@@ -17,7 +17,7 @@
  * along with the Arduino SdFat Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../../../libs/SdFatBeta20120108/extra/SdFatTestSuite/SdFatTestSuite.h"
+#include <SdFatTestSuite.h>
 static uint16_t failCount;
 static uint16_t testCount;
 static Print* testOut = &Serial;

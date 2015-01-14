@@ -23,7 +23,7 @@
  * \file
  * \brief \ref ostream class
  */
-#include "../../libs/SdFatBeta20120108/SdFat/ios.h"
+#include <ios.h>
 //------------------------------------------------------------------------------
 /** macro for flash inserter */
 #define pstr(str) pgm(PSTR(str))

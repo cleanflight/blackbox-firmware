@@ -17,7 +17,7 @@
  * along with the Arduino SerialPort Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../../libs/SerialPortBeta20120106/SerialPort/SerialPort.h"
+#include <SerialPort.h>
 //------------------------------------------------------------------------------
 /** \return the number of bytes in the ring buffer */
 int SerialRingBuffer::available() {

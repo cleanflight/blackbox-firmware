@@ -23,7 +23,7 @@
  * \file
  * \brief \ref ibufstream and \ref obufstream classes
  */
-#include "../../libs/SdFatBeta20120108/SdFat/iostream.h"
+#include <iostream.h>
 //==============================================================================
 /**
  * \class ibufstream

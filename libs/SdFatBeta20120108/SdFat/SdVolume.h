@@ -23,9 +23,9 @@
  * \file
  * \brief SdVolume class
  */
-#include "../../libs/SdFatBeta20120108/SdFat/Sd2Card.h"
-#include "../../libs/SdFatBeta20120108/SdFat/SdFatConfig.h"
-#include "../../libs/SdFatBeta20120108/SdFat/SdFatStructs.h"
+#include <SdFatConfig.h>
+#include <Sd2Card.h>
+#include <SdFatStructs.h>
 
 //==============================================================================
 // SdVolume class

@@ -23,8 +23,8 @@
  * \file
  * \brief \ref iostream class
  */
-#include "../../libs/SdFatBeta20120108/SdFat/istream.h"
-#include "../../libs/SdFatBeta20120108/SdFat/ostream.h"
+#include <istream.h>
+#include <ostream.h>
 /** Skip white space
  * \param[in] is the Stream
  * \return The stream

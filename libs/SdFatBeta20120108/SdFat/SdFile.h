@@ -21,7 +21,7 @@
  * \file
  * \brief SdFile class
  */
-#include "../../libs/SdFatBeta20120108/SdFat/SdBaseFile.h"
+#include <SdBaseFile.h>
 #ifndef SdFile_h
 #define SdFile_h
 //------------------------------------------------------------------------------

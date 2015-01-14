@@ -23,7 +23,7 @@
  * \file
  * \brief \ref istream class
  */
-#include "../../libs/SdFatBeta20120108/SdFat/ios.h"
+#include <ios.h>
 
 /**
  * \class istream

@@ -23,9 +23,9 @@
  * \file
  * \brief SdFat class
  */
-#include "../../libs/SdFatBeta20120108/SdFat/ArduinoStream.h"
-#include "../../libs/SdFatBeta20120108/SdFat/SdFile.h"
-#include "../../libs/SdFatBeta20120108/SdFat/SdStream.h"
+#include <SdFile.h>
+#include <SdStream.h>
+#include <ArduinoStream.h>
 //------------------------------------------------------------------------------
 /** SdFat version YYYYMMDD */
 #define SD_FAT_VERSION 20120108

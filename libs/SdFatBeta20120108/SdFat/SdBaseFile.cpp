@@ -18,7 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 //#include <SdBaseFile.h>
-#include "../../libs/SdFatBeta20120108/SdFat/SdFat.h"
+#include <SdFat.h>
 //------------------------------------------------------------------------------
 // pointer to cwd directory
 SdBaseFile* SdBaseFile::cwd_ = 0;

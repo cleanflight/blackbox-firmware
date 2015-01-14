@@ -17,9 +17,8 @@
  * along with the Arduino SdFat Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../../libs/SdFatBeta20120108/SdFat/istream.h"
-
 #include <float.h>
+#include <istream.h>
 //------------------------------------------------------------------------------
 /**
  * Extract a character if one is available.

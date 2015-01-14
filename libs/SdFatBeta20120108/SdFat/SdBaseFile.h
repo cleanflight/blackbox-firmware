@@ -29,8 +29,8 @@
 #else  // ARDUINO
 #include <Arduino.h>
 #endif  // ARDUINO
-#include "../../libs/SdFatBeta20120108/SdFat/SdFatConfig.h"
-#include "../../libs/SdFatBeta20120108/SdFat/SdVolume.h"
+#include <SdFatConfig.h>
+#include <SdVolume.h>
 //------------------------------------------------------------------------------
 /**
  * \struct fpos_t

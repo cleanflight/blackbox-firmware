@@ -23,8 +23,8 @@
  * \file
  * \brief Sd2Card class for V2 SD/SDHC cards
  */
-#include "../../libs/SdFatBeta20120108/SdFat/SdFatConfig.h"
-#include "../../libs/SdFatBeta20120108/SdFat/SdInfo.h"
+#include <SdFatConfig.h>
+#include <SdInfo.h>
 //------------------------------------------------------------------------------
 // SPI speed is F_CPU/2^(1 + index), 0 <= index <= 6
 /** Set SCK to max rate of F_CPU/2. See Sd2Card::setSckRate(). */
@@ -132,7 +132,7 @@ uint8_t const  SPI_MISO_PIN = MISO;
 uint8_t const  SPI_SCK_PIN = SCK;
 #else  // SS
 // pre 1.0 Arduino
-#include "../../libs/SdFatBeta20120108/SdFat/Sd2PinMap.h"
+#include <Sd2PinMap.h>
 /** The default chip select pin for the SD card is SS. */
 uint8_t const  SD_CHIP_SELECT_PIN = SS_PIN;
 // The following three pins must not be redefined for hardware SPI.

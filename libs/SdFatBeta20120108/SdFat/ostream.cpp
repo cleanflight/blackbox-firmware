@@ -17,7 +17,7 @@
  * along with the Arduino SdFat Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../../libs/SdFatBeta20120108/SdFat/ostream.h"
+#include <ostream.h>
 //------------------------------------------------------------------------------
 void ostream::do_fill(unsigned len) {
   for (;len < width(); len++) putch(fill());

@@ -18,7 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include "../../libs/SdFatBeta20120108/SdFat/SdFat.h"
+#include <SdFat.h>
 // catch pure virtual errors
 #if USE_CXA_PURE_VIRTUAL
 extern "C" void __cxa_pure_virtual() {

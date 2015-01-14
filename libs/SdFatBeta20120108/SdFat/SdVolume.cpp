@@ -17,7 +17,7 @@
  * along with the Arduino SdFat Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../../libs/SdFatBeta20120108/SdFat/SdVolume.h"
+#include <SdVolume.h>
 //------------------------------------------------------------------------------
 #if !USE_MULTIPLE_CARDS
 // raw block cache

@@ -19,7 +19,7 @@
  */
 #ifndef ios_h
 #define ios_h
-#include "../../libs/SdFatBeta20120108/SdFat/SdBaseFile.h"
+#include <SdBaseFile.h>
 /**
  * \file 
  * \brief \ref ios_base and \ref ios classes

@@ -17,7 +17,7 @@
  * along with the Arduino SdFat Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../../libs/SdFatBeta20120108/SdFat/SdFile.h"
+#include <SdFile.h>
 /**  Create a file object and open it in the current working directory.
  *
  * \param[in] path A path with a valid 8.3 DOS name for a file to be opened.

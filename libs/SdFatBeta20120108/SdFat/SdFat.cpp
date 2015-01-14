@@ -17,7 +17,7 @@
  * along with the Arduino SdFat Library.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../../libs/SdFatBeta20120108/SdFat/SdFat.h"
+#include <SdFat.h>
 
 //------------------------------------------------------------------------------
 #if USE_SERIAL_FOR_STD_OUT || !defined(UDR0)

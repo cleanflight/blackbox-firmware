@@ -1,4 +1,3 @@
-
 /* Arduino Sd2Card Library
  * Copyright (C) 2009 by William Greiman
  *
@@ -23,8 +22,8 @@
 #else  // ARDUINO
 #include <Arduino.h>
 #endif  // ARDUINO
-#include "../../libs/SdFatBeta20120108/SdFat/Sd2Card.h"
-#include "../../libs/SdFatBeta20120108/SdFat/Sd2PinMap.h"
+#include <Sd2Card.h>
+#include <Sd2PinMap.h>
 //------------------------------------------------------------------------------
 #ifndef SOFTWARE_SPI
 // functions for hardware SPI
