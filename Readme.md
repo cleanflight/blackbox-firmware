@@ -7,9 +7,9 @@ glitches during OpenLog startup that might mess with the settings.
 You will find a zip file containing the required libraries, the source-code and the compiled hex file on the "releases"
 page above.
 
-You'll need to copy the required libraries to your Arduino IDE's library path in order to build this from source. Copy
-the `libs/SdFatBeta20120108/SdFat` and `libs/SerialPortBeta20120106/SerialPort` folders to your libraries folder directly
-(don't copy the outer folders "SdFatBeta20120108" or "SerialPortBeta20120106".)
+You'll need to copy the required libraries to your Arduino [1.0.6] IDE's library path in order to build this from
+source. Copy the inner `libs/SdFat-master/SdFat` and `libs/SerialPort-master/SerialPort` folders to your libraries folder
+directly (don't copy the outer folders `SdFat-master/` or `SerialPort-master/`.)
 
 To flash the firmware to the OpenLog, you can use an FTDI programmer like the [FTDI Basic Breakout][] along with some
 way of switching the Tx and Rx pins over (since the OpenLog has them switched) like the [FTDI crossover][] .
@@ -20,3 +20,4 @@ your programmer if you're using one. Then click Sketch -> Verify/Compile and Fil
 [OpenLog 3 Light]: https://github.com/sparkfun/OpenLog/tree/master/firmware/OpenLog_v3_Light
 [FTDI Basic Breakout]: https://www.sparkfun.com/products/9716
 [FTDI crossover]: https://www.sparkfun.com/products/10660
+[1.0.6]: http://arduino.cc/en/Main/Software#toc2

@@ -1,0 +1,98 @@
+16 Feb 2014
+
+Fix 300 baud problem.
+
+Fix FreeMem()
+
+22 Feb 2013
+
+Fixed problems with newer versions of avr-gcc.
+
+Fixed compatibility problems with Arduino 1.5.2 beta.
+
+Added documentation.
+
+Code cleanup.
+
+6 Jan 2012
+
+Made buffer indice type an option (uint8_t or uint16_t) with
+#define ALLOW_LARGE_BUFFERS
+ 
+Added defines to hide templates:
+/** Define NewSerial with buffering like Arduino 1.0. */
+#define USE_NEW_SERIAL SerialPort<0, 63, 63> NewSerial
+/** Define NewSerial1 with buffering like Arduino 1.0. */
+#define USE_NEW_SERIAL1 SerialPort<1, 63, 63> NewSerial1
+/** Define NewSerial2 with buffering like Arduino 1.0. */
+#define USE_NEW_SERIAL2 SerialPort<2, 63, 63> NewSerial2
+/** Define NewSerial3 with buffering like Arduino 1.0. */
+#define USE_NEW_SERIAL3 SerialPort<3, 63, 63> NewSerial3
+ 
+Added HelloWorld example.
+
+Modified several examples.
+ 
+Internal changes based on running Google's style program cpplint.py.
+
+4 Jan 2012
+
+Added examples:
+
+ReadWriteTest
+WriteFlash
+
+Added functions:
+
+size_t write_P(PGM_P b, size_t n);
+size_t write(const __FlashStringHelper* s);
+size_t writeln(const __FlashStringHelper* s);
+
+fixed bug in size_t read(uint8_t* b, size_t n)
+
+
+3 Jan 2012
+
+Almost total rewrite so expect bugs!  Be sure to tell me about bugs.
+
+See html for more details about the following functions.
+
+Changed begin() to have a optional second argument to set parity,
+character size, and number of stop bits.
+
+void 	begin (long baud, uint8_t options = SP_8_BIT_CHAR)
+
+The following can be ORed together for options:
+
+Choose one stop bit option.
+static const uint8_t 	SP_1_STOP_BIT = 0 (default)
+static const uint8_t 	SP_2_STOP_BIT = M_USBS
+
+Choose one character size.
+static const uint8_t 	SP_5_BIT_CHAR = 0
+static const uint8_t 	SP_6_BIT_CHAR = M_UCSZ0
+static const uint8_t 	SP_7_BIT_CHAR = M_UCSZ1
+static const uint8_t 	SP_8_BIT_CHAR = M_UCSZ0 | M_UCSZ1
+
+Choose one parity option.
+static const uint8_t 	SP_EVEN_PARITY = M_UPM1
+static const uint8_t 	SP_NO_PARITY = 0
+static const uint8_t 	SP_ODD_PARITY = M_UPM0 | M_UPM1
+
+Added RX error checking.
+
+The following error bits are returned:
+static const uint8_t 	SP_FRAMING_ERROR = M_FE
+static const uint8_t 	SP_PARITY_ERROR = M_UPE
+static const uint8_t 	SP_RX_BUF_OVERRUN = 1
+static const uint8_t 	SP_RX_DATA_OVERRUN = M_DOR
+
+Added the following functions:
+
+void clearRxError()
+uint8_t getRxError()
+size_t 	read (uint8_t *b, size_t n)
+size_t 	write (const char *s) - overrides version in Stream
+size_t 	write (uint8_t *b, size_t n) - overrides version in Stream
+size_t 	writeln (const char *s)
+size_t 	writeln ()
