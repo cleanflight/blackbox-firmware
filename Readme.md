@@ -1,8 +1,8 @@
 # Blackbox firmware for the OpenLog
 
-This modified version of [OpenLog 3 Light][] discards the "CONFIG.TXT" system that is normally used to configure the
-OpenLog. Instead it hard-codes the correct settings for the Blackbox (115200 baud). This makes it more robust to power
-glitches during OpenLog startup that might mess with the settings.
+This modified version of [OpenLog 3 Light][] modifies the "CONFIG.TXT" system that is normally used to configure the
+OpenLog in order to simplify the available settings and ensure it is compatible with the Blackbox. The only available
+setting in CONFIG.TXT is the baud rate, which defaults to 115200.
 
 You will find a zip file containing the required libraries, the source-code and the compiled hex file on the "releases"
 page above.
