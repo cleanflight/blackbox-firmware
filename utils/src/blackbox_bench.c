@@ -25,7 +25,7 @@
 typedef struct benchOptions_t {
     int help;
     int duration;
-    int baudRate;
+    int baudRate, stopBits;
     int looptime;
     const char *analyzeFilename;
     const char *outputDevice;
@@ -34,6 +34,7 @@ typedef struct benchOptions_t {
 benchOptions_t defaultOptions = {
     .baudRate = 115200,
     .looptime = 2500,
+    .stopBits = 1,
     .duration = 15,
     .help = 0,
     .analyzeFilename = NULL, .outputDevice = NULL,
@@ -118,9 +119,10 @@ void writeBenchmarkFrames(int fd, int loopTime, int maxIterations, uint32_t *byt
     pframe[0] = 'P';
     iframe[0] = 'I';
 
-    // Start things off with a nice tidy "previous loop" timestamp
     firstLoop = micros();
-    lastLoop = micros() - loopTime;
+
+    // Start things off with a nice tidy "previous loop" timestamp
+    lastLoop = firstLoop - loopTime;
 
     *byteCount = 0;
     timingErrorSum = 0;
@@ -168,8 +170,8 @@ bool runBenchmark(const char *deviceName)
     int fd;
     uint32_t byteCount, timingErrorUs, actualDurationMsec;
 
-    fprintf(stderr, "Opening %s at %d baud...\n", deviceName, options.baudRate);
-    fd = serial_open(deviceName, options.baudRate);
+    fprintf(stderr, "Opening %s at %d baud and %d stop bits...\n", deviceName, options.baudRate, options.stopBits);
+    fd = serial_open(deviceName, options.baudRate, options.stopBits);
 
     if (fd == -1) {
         fprintf(stderr, "Failed to open serial port, maybe try a different baud rate?\n");
@@ -218,7 +220,8 @@ bool runBenchmark(const char *deviceName)
     writeBenchmarkFrames(fd, options.looptime, maxIterations, &byteCount, &timingErrorUs, &actualDurationMsec);
 
     fprintf(stderr, "\nWrote %u bytes (%u bytes/s, %u baud) with average frame start time error %d us\n\n", byteCount,
-            (byteCount * 1000) / actualDurationMsec, (byteCount * 8 * 1000) / actualDurationMsec, timingErrorUs);
+            (byteCount * 1000) / actualDurationMsec, (unsigned int) (((uint64_t) byteCount * (8 + 1 + options.stopBits) * 1000) / actualDurationMsec),
+            timingErrorUs);
 
     // Wait for card to flush
     fprintf(stderr, "Waiting for OpenLog to finish...\n");
@@ -327,8 +330,13 @@ void analyzeLog(FILE *input)
                     iterationNumBuffer |= c << 24;
 
                     // Does this look like a reasonable iteration number?
-                    if (iterationNumBuffer > lastIteration + 200 || iterationNumBuffer < lastIteration) {
+                    if (iterationNumBuffer > lastIteration && iterationNumBuffer < lastIteration + 200) {
                         lastIteration = iterationNumBuffer;
+                    } else {
+                        // Resynchronize
+                        currentFrameType = '\0';
+                        ungetc(c, input);
+                        continue;
                     }
                 } else if ((currentFrameType == 'I' && c != I_FRAME_FILL_BYTE) ||
                         (currentFrameType == 'P' && c != P_FRAME_FILL_BYTE)) {
@@ -343,6 +351,8 @@ void analyzeLog(FILE *input)
                 }
 
                 frameByteCount++;
+
+                // Did we get a complete frame worth of bytes?
                 if ((currentFrameType == 'I' && frameByteCount >= iSize) ||
                     (currentFrameType == 'P' && frameByteCount >= pSize)) {
                     goodFrames++;
@@ -353,7 +363,12 @@ void analyzeLog(FILE *input)
     }
 
     done:
-    fprintf(stderr, "Good frames %d, broken/missing iterations %d, total iterations %d\n", goodFrames, maxIterations - goodFrames, maxIterations);
+
+    if (sawHeaderIntro) {
+        fprintf(stderr, "Good frames %d, broken/missing iterations %d, total iterations %d\n", goodFrames, maxIterations - goodFrames, maxIterations);
+    } else {
+        fprintf(stderr, "Didn't find the benchmark file header, maybe the log got corrupted?\n");
+    }
 }
 
 void printUsage(const char *argv0)
@@ -366,11 +381,12 @@ void printUsage(const char *argv0)
         "Options:\n"
         "   --help                 This page\n"
         "   --baud <num>           Serial port baud rate (default %d)\n"
+        "   --stopbits <1|2>       Serial port stop bits (default %d)\n"
         "   --looptime <microsec>  Simulated looptime (default %d us)\n"
         "   --duration <seconds>   Simulation duration (default %d seconds)\n"
         "   --device <filename>    Serial port to write to\n"
         "   --analyze <filename>   OpenLog benchmark log to analyze\n"
-        "\n", argv0, defaultOptions.baudRate, defaultOptions.looptime, defaultOptions.duration
+        "\n", argv0, defaultOptions.baudRate, defaultOptions.stopBits, defaultOptions.looptime, defaultOptions.duration
     );
 }
 
@@ -383,6 +399,7 @@ static void parseCommandlineOptions(int argc, char **argv)
         SETTING_DEVICE,
         SETTING_BAUDRATE,
         SETTING_LOOPTIME,
+        SETTING_STOPBITS,
         SETTING_DURATION,
     };
 
@@ -393,6 +410,7 @@ static void parseCommandlineOptions(int argc, char **argv)
             {"analyze", required_argument, 0, SETTING_ANALYZE},
             {"device", required_argument, 0, SETTING_DEVICE},
             {"baud", required_argument, 0, SETTING_BAUDRATE},
+            {"stopbits", required_argument, 0, SETTING_STOPBITS},
             {"looptime", required_argument, 0, SETTING_LOOPTIME},
             {"duration", required_argument, 0, SETTING_DURATION},
             {0, 0, 0, 0}
@@ -416,6 +434,9 @@ static void parseCommandlineOptions(int argc, char **argv)
             break;
             case SETTING_BAUDRATE:
                 options.baudRate = atoi(optarg);
+            break;
+            case SETTING_STOPBITS:
+                options.stopBits = atoi(optarg);
             break;
             case SETTING_DURATION:
                 options.duration = atoi(optarg);

@@ -53,7 +53,7 @@ static int rate_to_constant(int baudrate) {
 
 // From https://jim.sh/ftx/files/linux-custom-baudrate.c:
 /* Open serial port in raw mode, with custom baudrate if necessary */
-int serial_open(const char *device, int rate)
+int serial_open(const char *device, int rate, int stopbits)
 {
     struct termios options;
     int fd;
@@ -96,8 +96,15 @@ int serial_open(const char *device, int rate)
     cfmakeraw(&options);
 
     options.c_cflag |= (CLOCAL | CREAD);
-    options.c_cflag &= ~(PARENB | CRTSCTS | CSIZE | CSTOPB); // No hardware flow control, no parity, 1 stop bit, clear size
+    // No hardware flow control, no parity, clear size, no hangup on close
+    options.c_cflag &= ~(PARENB | CRTSCTS | CSIZE | HUPCL);
     options.c_cflag |= CS8; //8 bits
+
+    if (stopbits >= 2) {
+        options.c_cflag |= CSTOPB;
+    } else {
+        options.c_cflag &= ~CSTOPB;
+    }
 
     if (tcsetattr(fd, TCSANOW, &options) != 0)
         return -1;
